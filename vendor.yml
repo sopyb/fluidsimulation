@@ -1,2 +1,2 @@
 # apply overwrites to all files in ./include
-./include/** linguist-vendored
+include/** linguist-vendored
