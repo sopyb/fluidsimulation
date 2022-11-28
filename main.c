@@ -135,38 +135,52 @@ int main() {
 	// diffuse density
 	for (int i = 0; i < 800; i++) {
 	  for (int j = 0; j < 600; j++) {
-		// check if cell is not on edge
-		if (i != 0 && i != 799 && j != 0 && j != 599) {
-		  // diffuse density
-		  cells[i][j].density =
-			  (cells[i][j].density +
-				  cells[i + 1][j].density +
-				  cells[i - 1][j].density +
-				  cells[i][j + 1].density +
-				  cells[i][j - 1].density) / 5;
+		  float density = cells[i][j].density;
+		  float color[3] = {0, 0, 0};
+		  int count = 1;
 
-		  // diffuse color
-		  cells[i][j].color[0] =
-			  (cells[i][j].color[0] +
-				  cells[i + 1][j].color[0] +
-				  cells[i - 1][j].color[0] +
-				  cells[i][j + 1].color[0] +
-				  cells[i][j - 1].color[0]) / 5;
+		  // check if cell is not on top edge
+		  if (j != 0) {
+			density += cells[i][j - 1].density;
+			color[0] += cells[i][j - 1].color[0];
+			color[1] += cells[i][j - 1].color[1];
+			color[2] += cells[i][j - 1].color[2];
+			count++;
+		  }
 
-		  cells[i][j].color[1] =
-			  (cells[i][j].color[1] +
-				  cells[i + 1][j].color[1] +
-				  cells[i - 1][j].color[1] +
-				  cells[i][j + 1].color[1] +
-				  cells[i][j - 1].color[1]) / 5;
+		  // check if cell is not on bottom edge
+		  if (j != 599) {
+			density += cells[i][j + 1].density;
+			color[0] += cells[i][j + 1].color[0];
+			color[1] += cells[i][j + 1].color[1];
+			color[2] += cells[i][j + 1].color[2];
+			count++;
+		  }
 
-		  cells[i][j].color[2] =
-			  (cells[i][j].color[2] +
-				  cells[i + 1][j].color[2] +
-				  cells[i - 1][j].color[2] +
-				  cells[i][j + 1].color[2] +
-				  cells[i][j - 1].color[2]) / 5;
-		}
+		  // check if cell is not on left edge
+		  if (i != 0) {
+			density += cells[i - 1][j].density;
+			color[0] += cells[i - 1][j].color[0];
+			color[1] += cells[i - 1][j].color[1];
+			color[2] += cells[i - 1][j].color[2];
+			count++;
+		  }
+
+		  // check if cell is not on right edge
+		  if (i != 799) {
+			density += cells[i + 1][j].density;
+			color[0] += cells[i + 1][j].color[0];
+			color[1] += cells[i + 1][j].color[1];
+			color[2] += cells[i + 1][j].color[2];
+			count++;
+		  }
+
+		  // calculate average density
+		  density /= (float)count;
+		  // calculate average color
+		  color[0] /= (float)count;
+		  color[1] /= (float)count;
+		  color[2] /= (float)count;
 	  }
 	}
 //	// print matrix of densities
