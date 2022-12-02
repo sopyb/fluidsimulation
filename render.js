@@ -148,13 +148,12 @@ canvas.addEventListener('touchmove', e => {
 canvas.addEventListener('touchend', e => {
   e.preventDefault()
 
-  let Ttouches = e.targetTouches
+  let Ttouches = e.changedTouches
+
   // loop through touches
   for (let i = 0; i < Ttouches.length; i++) {
-    let touch = Ttouches[i]
 
-    // filter out touch
-    touches = touches.filter(t => t.id !== touch.identifier)
+
   }
 })
 
