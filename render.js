@@ -27,6 +27,34 @@ updateCallback = () => {
  *                                 Events                                 *
 \**************************************************************************/
 
+// ! General Events
+
+function translatePos(object) {
+  // calculate position in canvas
+  return {
+    x: Math.floor(object.x / (window.innerHeight / settings.resolution)),
+    y: Math.floor(object.y / (window.innerHeight / settings.resolution)),
+    px: Math.floor(object.px / (window.innerHeight / settings.resolution)),
+    py: Math.floor(object.py / (window.innerHeight / settings.resolution))
+  }
+}
+
+function fluidInteract({ x, y, px, py }) {
+  // add velocity
+  fluid.addVelocity(x, y, x - px, y - py)
+  fluid.addVelocity(x +1, y, x - px, y - py)
+  fluid.addVelocity(x, y +1, x - px, y - py)
+  fluid.addVelocity(x +1, y +1, x - px, y - py)
+
+  // add density
+  fluid.addDensity(x, y, settings.density)
+  fluid.addDensity(x +1, y, settings.density)
+  fluid.addDensity(x, y +1, settings.density)
+  fluid.addDensity(x +1, y +1, settings.density)
+}
+
+// ! Mouse events
+
 // on mousedown
 canvas.addEventListener('mousedown', e => {
   mouse.down = true
@@ -65,6 +93,72 @@ canvas.addEventListener('mouseup', () => {
   mouse.py = -1
 })
 
+// ! Touch events
+
+let touches =  [
+
+]
+
+// on touchstart
+canvas.addEventListener('touchstart', e => {
+  e.preventDefault()
+
+  // loop through touches
+  for (let i = 0; i < e.changedTouches.length; i++) {
+    let touch = e.changedTouches[i]
+
+    // add touch to array
+    touches.push({
+      id: touch.identifier,
+      x: touch.pageX,
+      y: touch.pageY,
+      px: touch.pageX,
+      py: touch.pageY
+    })
+  }
+})
+
+// on touchmove
+canvas.addEventListener('touchmove', e => {
+  e.preventDefault()
+
+  // loop through touches
+  for (let i = 0; i < e.changedTouches.length; i++) {
+    let touch = e.changedTouches[i]
+
+    // find touch in array
+    for (let j = 0; j < touches.length; j++) {
+      if (touches[j].id === touch.identifier) {
+        // update px and py
+        touches[j].px = touches[j].x
+        touches[j].py = touches[j].y
+
+        // set touch position
+        touches[j].x = touch.pageX
+        touches[j].y = touch.pageY
+      }
+    }
+  }
+})
+
+// on touchend
+canvas.addEventListener('touchend', e => {
+  e.preventDefault()
+
+  // loop through touches
+  for (let i = 0; i < e.changedTouches.length; i++) {
+    let touch = e.changedTouches[i]
+
+    // find touch in array
+    for (let j = 0; j < touches.length; j++) {
+      if (touches[j].id === touch.identifier) {
+        // remove touch from array
+        touches.splice(j, 1)
+      }
+    }
+  }
+})
+
 /**************************************************************************\
  *               Rendering the fluid simulation on the canvas             *
 \**************************************************************************/
@@ -80,25 +174,11 @@ function render () {
     ctx.fillRect(x, y, 1, 1)
   }
 
-  if (mouse.down) {
-    // calculate position in canvas
-        let x = Math.floor(mouse.x / (window.innerHeight / settings.resolution)),
-          y = Math.floor(mouse.y / (window.innerHeight / settings.resolution)),
-          px = Math.floor(mouse.px / (window.innerHeight / settings.resolution)),
-          py = Math.floor(mouse.py / (window.innerHeight / settings.resolution))
+  // mouse interaction
+  if (mouse.down) fluidInteract(translatePos(mouse))
 
-    // add velocity
-    fluid.addVelocity(x, y, x - px, y - py)
-    fluid.addVelocity(x +1, y, x - px, y - py)
-    fluid.addVelocity(x, y +1, x - px, y - py)
-    fluid.addVelocity(x +1, y +1, x - px, y - py)
-
-    // add density
-    fluid.addDensity(x, y, settings.density)
-    fluid.addDensity(x +1, y, settings.density)
-    fluid.addDensity(x, y +1, settings.density)
-    fluid.addDensity(x +1, y +1, settings.density)
-  }
+  // touch interaction
+  for (let i = 0; i < touches.length; i++) fluidInteract(translatePos(touches[i]))
 
   // update fluid simulation
   if (!settings.pause) fluid.step()
