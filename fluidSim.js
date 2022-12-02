@@ -32,18 +32,28 @@ class FluidBox {
           let index = this.index(i, j)
 
           // average density in the area
-          let density = 0
+          let color = [0, 0, 0]
           let Vx = 0
           let Vy = 0
           for (let jj = 0; jj < factor; jj++) {
             for (let ii = 0; ii < factor; ii++) {
-              density += oldFluidBox.density[oldFluidBox.index(i * factor + ii, j * factor + jj)]
+              // color density
+              color[0] += oldFluidBox.colorR[this.index(i * factor + ii, j * factor + jj)]
+              color[1] += oldFluidBox.colorG[this.index(i * factor + ii, j * factor + jj)]
+              color[2] += oldFluidBox.colorB[this.index(i * factor + ii, j * factor + jj)]
+
+              // velocity
               Vx += oldFluidBox.Vx[oldFluidBox.index(i * factor + ii, j * factor + jj)]
               Vy += oldFluidBox.Vy[oldFluidBox.index(i * factor + ii, j * factor + jj)]
             }
           }
 
-          this.density[index] = density / (factor * factor)
+          // set color
+          this.colorR[index] = color[0] / (factor * factor)
+          this.colorG[index] = color[1] / (factor * factor)
+          this.colorB[index] = color[2] / (factor * factor)
+
+          // set velocity
           this.Vx[index] = Vx / (factor * factor)
           this.Vy[index] = Vy / (factor * factor)
         }
@@ -56,7 +66,13 @@ class FluidBox {
           for (let jj = 0; jj < factor; jj++) {
             for (let ii = 0; ii < factor; ii++) {
               let index = this.index(i * factor + ii, j * factor + jj)
-              this.density[index] = oldFluidBox.density[oldFluidBox.index(i, j)]
+
+              //color density
+              this.colorR[index] = oldFluidBox.colorR[oldFluidBox.index(i, j)]
+              this.colorG[index] = oldFluidBox.colorG[oldFluidBox.index(i, j)]
+              this.colorB[index] = oldFluidBox.colorB[oldFluidBox.index(i, j)]
+
+              //velocity
               this.Vx[index] = oldFluidBox.Vx[oldFluidBox.index(i, j)]
               this.Vy[index] = oldFluidBox.Vy[oldFluidBox.index(i, j)]
             }
