@@ -5,7 +5,9 @@ class FluidBox {
     this.size = size // size of the box
 
     // density
-    this.s = new Array(size * size).fill(0) // density previous step
+    this.colorR0 = new Array(size * size).fill(0) // color red previous step
+    this.colorG0 = new Array(size * size).fill(0) // color green previous step
+    this.colorB0 = new Array(size * size).fill(0) // color blue previous step
     this.colorR = new Array(size * size).fill(0) // color red
     this.colorG = new Array(size * size).fill(0) // color green
     this.colorB = new Array(size * size).fill(0) // color blue
@@ -118,18 +120,18 @@ class FluidBox {
     // get rid of the divergence
     this.project(this.Vx, this.Vy, this.Vx0, this.Vy0)
 
-    // diffuse density
+    // diffuse
     // RED
-    this.diffuse(0, this.s, this.colorR, settings.diffusion)
-    this.advect(0, this.colorR, this.s, this.Vx, this.Vy)
+    this.diffuse(0, this.colorR0, this.colorR, settings.diffusion)
+    this.advect(0, this.colorR, this.colorR0, this.Vx, this.Vy)
 
     // GREEN
-    this.diffuse(0, this.s, this.colorG, settings.diffusion)
-    this.advect(0, this.colorG, this.s, this.Vx, this.Vy)
+    this.diffuse(0, this.colorG0, this.colorG, settings.diffusion)
+    this.advect(0, this.colorG, this.colorG0, this.Vx, this.Vy)
 
     // BLUE
-    this.diffuse(0, this.s, this.colorB, settings.diffusion)
-    this.advect(0, this.colorB, this.s, this.Vx, this.Vy)
+    this.diffuse(0, this.colorB0, this.colorB, settings.diffusion)
+    this.advect(0, this.colorB, this.colorB0, this.Vx, this.Vy)
 
     // fade out
     this.fadeOut()
