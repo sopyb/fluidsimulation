@@ -151,7 +151,7 @@ canvas.addEventListener('touchend', e => {
   let Ttouches = e.targetTouches
   // loop through touches
   for (let i = 0; i < Ttouches.length; i++) {
-    let touch = e.changedTouches[i]
+    let touch = Ttouches[i]
 
     // find touch in array
     for (let j = 0; j < touches.length; j++) {
