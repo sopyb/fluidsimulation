@@ -101,8 +101,6 @@ let touches =  [
 
 // on touchstart
 canvas.addEventListener('touchstart', e => {
-  e.preventDefault()
-
   // loop through touches
   for (let i = 0; i < e.changedTouches.length; i++) {
     let touch = e.changedTouches[i]
@@ -143,8 +141,6 @@ canvas.addEventListener('touchmove', e => {
 
 // on touchend
 canvas.addEventListener('touchend', e => {
-  e.preventDefault()
-
   // loop through touches
   for (let i = 0; i < e.changedTouches.length; i++) {
     let touch = e.changedTouches[i]
