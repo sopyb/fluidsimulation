@@ -1,6 +1,6 @@
 let settings = {
-  resolution: 128,
-  viscosity: 0.01,
+  resolution: 64,
+  viscosity: 0.0001,
   diffusion: 0.001,
   fadeout: 0.01,
   dt: 0.1,
@@ -17,6 +17,14 @@ const resolutionLabel = document.querySelector('label[for=resolution]')
 // get input #viscosity and it's label
 const viscosityInput = document.querySelector('#viscosity')
 const viscosityValue = document.querySelector('#viscosity-value')
+
+// get input #diffusion and it's label
+const diffusionInput = document.querySelector('#diffusion')
+const diffusionValue = document.querySelector('#diffusion-value')
+
+// get input #fadeout and it's label
+const fadeoutInput = document.querySelector('#fadeout')
+const fadeoutValue = document.querySelector('#fadeout-value')
 
 // get input #dt and it's label
 const dtInput = document.querySelector('#dt')
@@ -40,6 +48,8 @@ if (localStorage.getItem('settings')) {
 
     settings.resolution = savedSettings.resolution ?? settings.resolution
     settings.viscosity = savedSettings.viscosity ?? settings.viscosity
+    settings.diffusion = savedSettings.diffusion ?? settings.diffusion
+    settings.fadeout = savedSettings.fadeout ?? settings.fadeout
     settings.dt = savedSettings.dt ?? settings.dt
     settings.density = savedSettings.density ?? settings.density
     settings.velocityMultiplier = savedSettings.velocityMultiplier ?? settings.velocityMultiplier
@@ -53,7 +63,13 @@ if (localStorage.getItem('settings')) {
 resolutionSelect.value = settings.resolution
 
 // set input #viscosity
-viscosityInput.value = settings.viscosity
+viscosityInput.value = settings.viscosity * 100
+
+// set input #diffusion
+diffusionInput.value = settings.diffusion * 10
+
+// set input #fadeout
+fadeoutInput.value = settings.fadeout
 
 // set input #dt
 dtInput.value = settings.dt
@@ -67,7 +83,9 @@ velocityMultiplierInput.value = settings.velocityMultiplier
 
 // update labels and values
 resolutionLabel.innerHTML = 'Resolution: ' + resolutionSelect.value
-viscosityValue.innerHTML = parseFloat(viscosityInput.value).toFixed(2)
+viscosityValue.innerHTML = (parseFloat(viscosityInput.value)/100).toFixed(4)
+diffusionValue.innerHTML = (parseFloat(diffusionInput.value)/10).toFixed(3)
+fadeoutValue.innerHTML = parseFloat(fadeoutInput.value).toFixed(2)
 dtValue.innerHTML = parseFloat(dtInput.value).toFixed(2)
 densityValue.innerHTML = parseFloat(densityInput.value).toFixed(2)
 velocityMultiplierValue.innerHTML = parseFloat(velocityMultiplierInput.value).toFixed(2)
@@ -84,8 +102,22 @@ resolutionSelect.addEventListener('change', (e) => {
 
 // add event listener to input #viscosity
 viscosityInput.addEventListener('input', (e) => {
-  settings.viscosity = parseFloat(e.target.value)
-  viscosityValue.innerHTML = settings.viscosity.toFixed(2)
+  settings.viscosity = parseFloat(e.target.value) / 100
+  viscosityValue.innerHTML = settings.viscosity.toFixed(4)
+  localStorage.setItem('settings', JSON.stringify(settings))
+})
+
+// add event listener to input #diffusion
+diffusionInput.addEventListener('input', (e) => {
+  settings.diffusion = parseFloat(e.target.value) / 10
+  diffusionValue.innerHTML = settings.diffusion.toFixed(3)
+  localStorage.setItem('settings', JSON.stringify(settings))
+})
+
+// add event listener to input #fadeout
+fadeoutInput.addEventListener('input', (e) => {
+  settings.fadeout = parseFloat(e.target.value)
+  fadeoutValue.innerHTML = settings.fadeout.toFixed(2)
   localStorage.setItem('settings', JSON.stringify(settings))
 })
 

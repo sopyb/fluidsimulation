@@ -98,13 +98,13 @@ class FluidBox {
     this.advect(0, this.density, this.s, this.Vx, this.Vy)
 
     // fade out
-    // this.fadeOut()
+    this.fadeOut()
   }
 
   fadeOut () {
     for (let i = 0; i < this.size * this.size; i++) {
       // fade out relative to dt
-      this.density[i] *= 1 - settings.dt * settings.fadeOut
+      this.density[i] *= 1 - settings.dt * settings.fadeout
     }
   }
 
