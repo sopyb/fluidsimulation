@@ -3,15 +3,18 @@ let iterations = 4
 class FluidBox {
   constructor (size, oldFluidBox) {
     this.size = size // size of the box
-    this.s = new Array(size * size).fill(0) // density
-    this.density = new Array(size * size).fill(0) // density
+
+    // density
+    this.s = new Array(size * size).fill(0) // density previous step
     this.colorR = new Array(size * size).fill(0) // color red
     this.colorG = new Array(size * size).fill(0) // color green
     this.colorB = new Array(size * size).fill(0) // color blue
 
+    // velocity
     this.Vx = new Array(size * size).fill(0) // velocity x
     this.Vy = new Array(size * size).fill(0) // velocity y
 
+    // velocity previous step
     this.Vx0 = new Array(size * size).fill(0) // velocity x
     this.Vy0 = new Array(size * size).fill(0) // velocity y
 
@@ -82,9 +85,16 @@ class FluidBox {
     return [this.colorR[index], this.colorG[index], this.colorB[index]]
   }
 
-  addDensity (i, j, amount) {
+  addDensity (i, j, color) {
     let index = this.index(i, j)
-    this.density[index] += amount
+
+    this.colorR[index] = color[0]
+    this.colorG[index] = color[1]
+    this.colorB[index] = color[2]
+  }
+
+  getDensity (i) {
+    return [this.colorR[i], this.colorG[i], this.colorB[i]]
   }
 
   addVelocity (i, j, amountX, amountY) {
@@ -109,18 +119,16 @@ class FluidBox {
     this.project(this.Vx, this.Vy, this.Vx0, this.Vy0)
 
     // diffuse density
-    this.diffuse(0, this.s, this.density, settings.diffusion)
-    this.advect(0, this.density, this.s, this.Vx, this.Vy)
-
-    // diffuse color
     // RED
     this.diffuse(0, this.s, this.colorR, settings.diffusion)
     this.advect(0, this.colorR, this.s, this.Vx, this.Vy)
+
     // GREEN
     this.diffuse(0, this.s, this.colorG, settings.diffusion)
     this.advect(0, this.colorG, this.s, this.Vx, this.Vy)
-    this.diffuse(0, this.s, this.colorB, settings.diffusion)
+
     // BLUE
+    this.diffuse(0, this.s, this.colorB, settings.diffusion)
     this.advect(0, this.colorB, this.s, this.Vx, this.Vy)
 
     // fade out
@@ -130,7 +138,9 @@ class FluidBox {
   fadeOut () {
     for (let i = 0; i < this.size * this.size; i++) {
       // fade out relative to dt
-      this.density[i] *= 1 - settings.dt * settings.fadeout
+      this.colorR[i] *= 1 - settings.dt * settings.fadeout
+      this.colorG[i] *= 1 - settings.dt * settings.fadeout
+      this.colorB[i] *= 1 - settings.dt * settings.fadeout
     }
   }
 

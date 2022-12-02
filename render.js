@@ -184,10 +184,9 @@ function render () {
   for (let i = 0; i < settings.resolution * settings.resolution; i++) {
     let x = i % settings.resolution,
       y = Math.floor(i / settings.resolution),
-      d = fluid.density[i],
-      c = fluid.getColor(x, y)
+      d = fluid.getDensity(i)
 
-    ctx.fillStyle = `rgba(${c[0]}, ${c[1]}, ${c[2]}, ${d})`
+    ctx.fillStyle = `rgba(${d[0]}, ${d[1]}, ${d[2]})`
     ctx.fillRect(x, y, 1, 1)
   }
 
