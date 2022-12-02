@@ -6,6 +6,9 @@ Based on [Real-Time Fluid Dynamics for Games](http://www.dgp.toronto.edu/people/
 IDK Physics project go brr (and I'm a sado-masochist)
 
 ## How to run
+Online [here](https://sopy.one/fluidsimulator/) (thanks GitHub Pages!)
+
+**or**
 ```bash
 # clone the repo
 git clone https://github.com/sopyb/FluidSimulation.git
