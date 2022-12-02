@@ -99,20 +99,14 @@ let touches =  [
 
 ]
 
-// touch fix from stackoverflow - https://stackoverflow.com/questions/50792027/
-function fixTouchMove( event )
-{
-  return;
-}
-
-// on touchstart
-canvas.addEventListener('touchstart', fixTouchMove, { passive: false })
-
 // on touchstart
 canvas.addEventListener('touchstart', e => {
+  e.preventDefault()
+
+  let Ttouches = e.targetTouches
   // loop through touches
-  for (let i = 0; i < e.changedTouches.length; i++) {
-    let touch = e.changedTouches[i]
+  for (let i = 0; i < Ttouches.length; i++) {
+    let touch = Ttouches[i]
 
     // add touch to array
     touches.push({
@@ -129,9 +123,11 @@ canvas.addEventListener('touchstart', e => {
 canvas.addEventListener('touchmove', e => {
   e.preventDefault()
 
+  let Ttouches = e.targetTouches
+
   // loop through touches
-  for (let i = 0; i < e.changedTouches.length; i++) {
-    let touch = e.changedTouches[i]
+  for (let i = 0; i < Ttouches.length; i++) {
+    let touch = Ttouches[i]
 
     // find touch in array
     for (let j = 0; j < touches.length; j++) {
@@ -150,8 +146,11 @@ canvas.addEventListener('touchmove', e => {
 
 // on touchend
 canvas.addEventListener('touchend', e => {
+  e.preventDefault()
+
+  let Ttouches = e.targetTouches
   // loop through touches
-  for (let i = 0; i < e.changedTouches.length; i++) {
+  for (let i = 0; i < Ttouches.length; i++) {
     let touch = e.changedTouches[i]
 
     // find touch in array
