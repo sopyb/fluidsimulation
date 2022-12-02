@@ -99,6 +99,15 @@ let touches =  [
 
 ]
 
+// touch fix from stackoverflow - https://stackoverflow.com/questions/50792027/
+function fixTouchMove( event )
+{
+  return;
+}
+
+// on touchstart
+canvas.addEventListener('touchstart', fixTouchMove, { passive: false })
+
 // on touchstart
 canvas.addEventListener('touchstart', e => {
   // loop through touches
