@@ -76,7 +76,7 @@ resolutionSelect.value = settings.resolution
 viscosityInput.value = settings.viscosity * 100
 
 // set input #diffusion
-diffusionInput.value = settings.diffusion * 10
+diffusionInput.value = settings.diffusion * 100
 
 // set input #fadeout
 fadeoutInput.value = settings.fadeout
@@ -96,7 +96,7 @@ pauseButton.innerText = settings.pause ? 'Resume' : 'Pause'
 // update labels and values
 resolutionLabel.innerHTML = 'Resolution: ' + resolutionSelect.value
 viscosityValue.innerHTML = (parseFloat(viscosityInput.value)/100).toFixed(4)
-diffusionValue.innerHTML = (parseFloat(diffusionInput.value)/10).toFixed(3)
+diffusionValue.innerHTML = (parseFloat(diffusionInput.value)/100).toFixed(4)
 fadeoutValue.innerHTML = parseFloat(fadeoutInput.value).toFixed(2)
 dtValue.innerHTML = parseFloat(dtInput.value).toFixed(2)
 densityValue.innerHTML = parseFloat(densityInput.value).toFixed(2)
@@ -121,8 +121,8 @@ viscosityInput.addEventListener('input', (e) => {
 
 // add event listener to input #diffusion
 diffusionInput.addEventListener('input', (e) => {
-  settings.diffusion = parseFloat(e.target.value) / 10
-  diffusionValue.innerHTML = settings.diffusion.toFixed(3)
+  settings.diffusion = parseFloat(e.target.value) / 100
+  diffusionValue.innerHTML = settings.diffusion.toFixed(4)
   localStorage.setItem('settings', JSON.stringify(settings))
 })
 
