@@ -153,13 +153,8 @@ canvas.addEventListener('touchend', e => {
   for (let i = 0; i < Ttouches.length; i++) {
     let touch = Ttouches[i]
 
-    // find touch in array
-    for (let j = 0; j < touches.length; j++) {
-      if (touches[j].id === touch.identifier) {
-        // remove touch from array
-        touches.splice(j, 1)
-      }
-    }
+    // filter out touch
+    touches = touches.filter(t => t.id !== touch.identifier)
   }
 })
 
