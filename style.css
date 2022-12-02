@@ -10,7 +10,7 @@ canvas {
     background-color: #000;
     float: left;
 
-    touch-action:none;
+    touch-action: none;
 }
 
 #settings {
@@ -38,7 +38,7 @@ canvas {
 #settings input, select {
     display: inline;
 
-    margin-bottom: 2%;
+    margin-bottom: 1%;
 }
 
 #credits {

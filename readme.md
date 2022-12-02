@@ -1,5 +1,6 @@
 # Fluid Simulator
 This is a simple 2D fluid simulation using HTML5 canvas (since I can't figure out OpenGL.. yet).
+
 Based on [Real-Time Fluid Dynamics for Games](http://www.dgp.toronto.edu/people/stam/reality/Research/pdf/GDC03.pdf) by Jos Stam.
 
 ### Why?

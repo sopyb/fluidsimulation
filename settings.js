@@ -1,5 +1,16 @@
+// Util fuctions
+function hexToRgb (hex) {
+  return [
+    parseInt(hex.slice(1, 3), 16),
+    parseInt(hex.slice(3, 5), 16),
+    parseInt(hex.slice(5, 7), 16)
+  ]
+}
+
+// settings stuff
 let settings = {
   resolution: 64,
+  color: [255, 255, 255],
   viscosity: 0.0001,
   diffusion: 0.001,
   fadeout: 0.01,
@@ -15,6 +26,10 @@ let updateCallback = () => {}
 // get select #resolution and it's label
 const resolutionSelect = document.querySelector('#resolution')
 const resolutionLabel = document.querySelector('label[for=resolution]')
+
+// get select #color and it's label
+let colorSelect = document.querySelector('#color')
+let colorLabel = document.querySelector('#color-value')
 
 // get input #viscosity and it's label
 const viscosityInput = document.querySelector('#viscosity')
@@ -55,6 +70,7 @@ if (localStorage.getItem('settings')) {
     let savedSettings = JSON.parse(localStorage.getItem('settings'))
 
     settings.resolution = savedSettings.resolution ?? settings.resolution
+    settings.color = savedSettings.color ?? settings.color
     settings.viscosity = savedSettings.viscosity ?? settings.viscosity
     settings.diffusion = savedSettings.diffusion ?? settings.diffusion
     settings.fadeout = savedSettings.fadeout ?? settings.fadeout
@@ -66,11 +82,23 @@ if (localStorage.getItem('settings')) {
   } catch (e) {
     // clear localStorage if it's corrupted
     localStorage.clear()
+
+    // save settings to localStorage
+    localStorage.setItem('settings', JSON.stringify(settings))
+
+    // announce error
+    alert('Error: Saved settings are corrupted. Settings have been reset.')
+
+    // log error
+    console.error(e)
   }
 }
 
 // set select #resolution
 resolutionSelect.value = settings.resolution
+
+// set select #color converting the array to a hex string
+colorSelect.value = '#' + settings.color.map(c => c.toString(16)).join('')
 
 // set input #viscosity
 viscosityInput.value = settings.viscosity * 100
@@ -95,8 +123,9 @@ pauseButton.innerText = settings.pause ? 'Resume' : 'Pause'
 
 // update labels and values
 resolutionLabel.innerHTML = 'Resolution: ' + resolutionSelect.value
-viscosityValue.innerHTML = (parseFloat(viscosityInput.value)/100).toFixed(4)
-diffusionValue.innerHTML = (parseFloat(diffusionInput.value)/100).toFixed(4)
+colorLabel.innerHTML = colorSelect.value.toUpperCase()
+viscosityValue.innerHTML = (parseFloat(viscosityInput.value) / 100).toFixed(4)
+diffusionValue.innerHTML = (parseFloat(diffusionInput.value) / 100).toFixed(4)
 fadeoutValue.innerHTML = parseFloat(fadeoutInput.value).toFixed(2)
 dtValue.innerHTML = parseFloat(dtInput.value).toFixed(2)
 densityValue.innerHTML = parseFloat(densityInput.value).toFixed(2)
@@ -110,6 +139,13 @@ resolutionSelect.addEventListener('change', (e) => {
   localStorage.setItem('settings', JSON.stringify(settings))
 
   updateCallback()
+})
+
+// add event listener to select #color
+colorSelect.addEventListener('change', (e) => {
+  settings.color = hexToRgb(e.target.value)
+  colorLabel.innerHTML = e.target.value.toUpperCase()
+  localStorage.setItem('settings', JSON.stringify(settings))
 })
 
 // add event listener to input #viscosity

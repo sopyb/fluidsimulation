@@ -5,6 +5,9 @@ class FluidBox {
     this.size = size // size of the box
     this.s = new Array(size * size).fill(0) // density
     this.density = new Array(size * size).fill(0) // density
+    this.colorR = new Array(size * size).fill(0) // color red
+    this.colorG = new Array(size * size).fill(0) // color green
+    this.colorB = new Array(size * size).fill(0) // color blue
 
     this.Vx = new Array(size * size).fill(0) // velocity x
     this.Vy = new Array(size * size).fill(0) // velocity y
@@ -67,6 +70,18 @@ class FluidBox {
     return i + j * this.size
   }
 
+  addColor (i, j, color) {
+    let index = this.index(i, j)
+    this.colorR[index] = color[0]
+    this.colorG[index] = color[1]
+    this.colorB[index] = color[2]
+  }
+
+  getColor (i, j) {
+    let index = this.index(i, j)
+    return [this.colorR[index], this.colorG[index], this.colorB[index]]
+  }
+
   addDensity (i, j, amount) {
     let index = this.index(i, j)
     this.density[index] += amount
@@ -97,6 +112,17 @@ class FluidBox {
     this.diffuse(0, this.s, this.density, settings.diffusion)
     this.advect(0, this.density, this.s, this.Vx, this.Vy)
 
+    // diffuse color
+    // RED
+    this.diffuse(0, this.s, this.colorR, settings.diffusion)
+    this.advect(0, this.colorR, this.s, this.Vx, this.Vy)
+    // GREEN
+    this.diffuse(0, this.s, this.colorG, settings.diffusion)
+    this.advect(0, this.colorG, this.s, this.Vx, this.Vy)
+    this.diffuse(0, this.s, this.colorB, settings.diffusion)
+    // BLUE
+    this.advect(0, this.colorB, this.s, this.Vx, this.Vy)
+
     // fade out
     this.fadeOut()
   }
@@ -115,32 +141,31 @@ class FluidBox {
 
   linearSolve (b, x, x0, a, c) {
     // Gauss-Seidel
-    let cRecip = 1.0 / c;
+    let cRecip = 1.0 / c
     for (let k = 0; k < iterations; k++) {
-        for (let j = 1; j < this.size - 1; j++) {
-          for (let i = 1; i < this.size - 1; i++) {
-            x[this.index(i, j)] =
-              (x0[this.index(i, j)]
+      for (let j = 1; j < this.size - 1; j++) {
+        for (let i = 1; i < this.size - 1; i++) {
+          x[this.index(i, j)] =
+            (x0[this.index(i, j)]
               + a *
-                (x[this.index(i+1, j)]
-                +x[this.index(i-1, j)]
-                +x[this.index(i, j+1)]
-                +x[this.index(i, j-1)]
-              )) * cRecip;
-          }
+              (x[this.index(i + 1, j)]
+                + x[this.index(i - 1, j)]
+                + x[this.index(i, j + 1)]
+                + x[this.index(i, j - 1)]
+              )) * cRecip
         }
-      this.setBoundary(b, x);
+      }
+      this.setBoundary(b, x)
     }
   }
 
   setBoundary (b, x) {
-    for (let i = 1;i < this.size - 1; i++)
-    {
+    for (let i = 1; i < this.size - 1; i++) {
       x[this.index(i, 0)] = b === 2 ? -x[this.index(i, 1)] : x[this.index(i, 1)]
       x[this.index(i, this.size - 1)] = b === 2 ? -x[this.index(i, this.size - 2)] : x[this.index(i, this.size - 2)]
     }
 
-    for (let j = 1;j < this.size - 1;j++) {
+    for (let j = 1; j < this.size - 1; j++) {
       x[this.index(0, j)] = b === 1 ? -x[this.index(1, j)] : x[this.index(1, j)]
       x[this.index(this.size - 1, j)] = b === 1 ? -x[this.index(this.size - 2, j)] : x[this.index(this.size - 2, j)]
     }
