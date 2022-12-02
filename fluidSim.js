@@ -106,6 +106,8 @@ class FluidBox {
   addDensity (i, j, color) {
     let index = this.index(i, j)
 
+    color = color.map(x => Math.floor(x * settings.density / 255))
+
     this.colorR[index] = color[0]
     this.colorG[index] = color[1]
     this.colorB[index] = color[2]
