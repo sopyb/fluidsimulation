@@ -9,6 +9,8 @@ canvas {
 
     background-color: #000;
     float: left;
+
+    touch-action:none;
 }
 
 #settings {
