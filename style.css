@@ -3,9 +3,33 @@
 }
 canvas {
     display: block;
-    width: 100vw;
+    width: 100vh;
     height: 100vh;
-    max-height: 100%;
 
     image-rendering: pixelated;
+
+    background-color: #000;
+    float: left;
+}
+
+#settings {
+    float: right;
+    width: calc(100vw - 100vh);
+    height: 100vh;
+    padding: 1%;
+    box-sizing: border-box;
+}
+
+#settings p {
+    margin: 0;
+    display: inline;
+    vertical-align: top;
+}
+
+#settings input, select {
+    display: inline;
+
+    width: 50%;
+
+    margin-bottom: 10%;
 }
