@@ -98,7 +98,7 @@ if (localStorage.getItem('settings')) {
 resolutionSelect.value = settings.resolution
 
 // set select #color converting the array to a hex string
-colorSelect.value = '#' + settings.color.map(c => c.toString(16)).join('')
+colorSelect.value = '#' + settings.color.map(c => c.toString(16)).padStart(2, "0").join('')
 
 // set input #viscosity
 viscosityInput.value = settings.viscosity * 100
