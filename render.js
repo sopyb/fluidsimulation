@@ -57,9 +57,6 @@ function fluidInteract ({ x, y, px, py }) {
   fluid.addColor(x + 1, y, settings.color)
   fluid.addColor(x, y + 1, settings.color)
   fluid.addColor(x + 1, y + 1, settings.color)
-
-  console.log(x, y, px, py)
-  console.log(settings.color)
 }
 
 // ! Mouse events
