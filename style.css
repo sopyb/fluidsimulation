@@ -6,8 +6,6 @@ canvas {
     width: 100vh;
     height: 100vh;
 
-    image-rendering: pixelated;
-
     background-color: #000;
     float: left;
 }
@@ -26,10 +24,12 @@ canvas {
     vertical-align: top;
 }
 
-#settings input, select {
+#settings input[type="range"], select {
     display: inline;
 
     width: 50%;
+}
 
+#settings input, select{
     margin-bottom: 2%;
 }

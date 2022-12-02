@@ -24,19 +24,6 @@ updateCallback = () => {
 }
 
 /**************************************************************************\
- *                           Functions for noise                          *
-\**************************************************************************/
-function noise() {
-  let theta = 2 * Math.PI * Math.random(),
-    r = Math.sqrt(Math.random())
-
-  return {
-    x: r * Math.cos(theta),
-    y: r * Math.sin(theta)
-  }
-}
-
-/**************************************************************************\
  *                                 Events                                 *
 \**************************************************************************/
 
@@ -68,7 +55,7 @@ canvas.addEventListener('mousemove', e => {
 })
 
 // on mouseup
-canvas.addEventListener('mouseup', e => {
+canvas.addEventListener('mouseup', () => {
   mouse.down = false
 
   // clear mouse position
@@ -83,17 +70,6 @@ canvas.addEventListener('mouseup', e => {
 \**************************************************************************/
 
 function render () {
-  // add density to center of fluid
-  //   let x = Math.floor(settings.resolution / 2),
-  //       y = Math.floor(settings.resolution / 2),
-  //       n = noise(),
-  //       vx = settings.velocityMultiplier * n.x,
-  //       vy = settings.velocityMultiplier * n.y
-  //
-  //   // add density and velocity to fluid
-  //   fluid.addDensity(x, y, settings.density)
-  //   fluid.addVelocity(x, y, vx, vy)
-
 
   for (let i = 0; i < settings.resolution * settings.resolution; i++) {
     let x = i % settings.resolution,
@@ -125,7 +101,7 @@ function render () {
   }
 
   // update fluid simulation
-  fluid.step()
+  if (!settings.pause) fluid.step()
 
   // request the next frame
   requestAnimationFrame(render)

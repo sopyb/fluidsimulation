@@ -6,6 +6,8 @@ let settings = {
   dt: 0.1,
   density: 255,
   velocityMultiplier: 1,
+  pixelated: false,
+  pause: false,
 }
 
 let updateCallback = () => {}
@@ -38,8 +40,14 @@ const densityValue = document.querySelector('#density-value')
 const velocityMultiplierInput = document.querySelector('#velocity')
 const velocityMultiplierValue = document.querySelector('#velocity-value')
 
+// get input #pixelated
+const pixelatedInput = document.querySelector('#pixelated')
+
 // get button #reset
 const resetButton = document.querySelector('#reset')
+
+// get button #pause
+const pauseButton = document.querySelector('#pause')
 
 // get settings from localStorage if they exist
 if (localStorage.getItem('settings')) {
@@ -53,6 +61,8 @@ if (localStorage.getItem('settings')) {
     settings.dt = savedSettings.dt ?? settings.dt
     settings.density = savedSettings.density ?? settings.density
     settings.velocityMultiplier = savedSettings.velocityMultiplier ?? settings.velocityMultiplier
+    settings.pixelated = savedSettings.pixelated ?? settings.pixelated
+    settings.pause = savedSettings.pause ?? settings.pause
   } catch (e) {
     // clear localStorage if it's corrupted
     localStorage.clear()
@@ -77,9 +87,11 @@ dtInput.value = settings.dt
 // set input #density
 densityInput.value = settings.density
 
-
 // set input #velocityMultiplier
 velocityMultiplierInput.value = settings.velocityMultiplier
+
+// set button #pause
+pauseButton.innerText = settings.pause ? 'Resume' : 'Pause'
 
 // update labels and values
 resolutionLabel.innerHTML = 'Resolution: ' + resolutionSelect.value
@@ -142,8 +154,28 @@ velocityMultiplierInput.addEventListener('input', (e) => {
   localStorage.setItem('settings', JSON.stringify(settings))
 })
 
+// add event listener to input #pixelated
+pixelatedInput.addEventListener('change', (e) => {
+  settings.pixelated = e.target.checked
+  localStorage.setItem('settings', JSON.stringify(settings))
+
+  // find #render canvas
+  const renderCanvas = document.querySelector('#render')
+  // set image-rendering style
+  renderCanvas.style.imageRendering = settings.pixelated ? 'pixelated' : 'auto'
+
+  updateCallback()
+})
+
 // add event listener to button #reset
 resetButton.addEventListener('click', () => {
   localStorage.removeItem('settings')
   location.reload()
+})
+
+// add event listener to button #pause
+pauseButton.addEventListener('click', () => {
+  settings.pause = !settings.pause
+  pauseButton.innerText = settings.pause ? 'Resume' : 'Pause'
+  localStorage.setItem('settings', JSON.stringify(settings))
 })
