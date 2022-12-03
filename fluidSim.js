@@ -117,8 +117,8 @@ class FluidBox {
 
   addVelocity (i, j, amountX, amountY) {
     let index = this.index(i, j)
-    this.velocity[0][index] += amountX
-    this.velocity[1][index] += amountY
+    this.velocity[0][index] += amountX * settings.velocityMultiplier
+    this.velocity[1][index] += amountY * settings.velocityMultiplier
   }
 
   step () {
