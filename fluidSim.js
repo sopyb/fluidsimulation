@@ -5,21 +5,24 @@ class FluidBox {
     this.size = size // size of the box
 
     // density
-    this.colorR0 = new Array(size * size).fill(0) // color red previous step
-    this.colorG0 = new Array(size * size).fill(0) // color green previous step
-    this.colorB0 = new Array(size * size).fill(0) // color blue previous step
-    this.colorR = new Array(size * size).fill(0) // color red
-    this.colorG = new Array(size * size).fill(0) // color green
-    this.colorB = new Array(size * size).fill(0) // color blue
+    this.color = [new Array(size * size).fill(0), // color red
+                  new Array(size * size).fill(0), // color green
+                  new Array(size * size).fill(0)] // color blue
+
+    // density previous step
+    this.color0 = [new Array(size * size).fill(0), // color red previous step
+                   new Array(size * size).fill(0), // color green previous step
+                   new Array(size * size).fill(0)] // color blue previous step
 
     // velocity
-    this.Vx = new Array(size * size).fill(0) // velocity x
-    this.Vy = new Array(size * size).fill(0) // velocity y
+    this.velocity = [new Array(size * size).fill(0), // velocity x
+                     new Array(size * size).fill(0)] // velocity y
 
     // velocity previous step
-    this.Vx0 = new Array(size * size).fill(0) // velocity x
-    this.Vy0 = new Array(size * size).fill(0) // velocity y
+    this.velocity0 = [new Array(size * size).fill(0), // velocity x
+                      new Array(size * size).fill(0)] // velocity y
 
+    // import old fluid box
     if (oldFluidBox) this.import(oldFluidBox)
   }
 
@@ -38,24 +41,24 @@ class FluidBox {
           for (let jj = 0; jj < factor; jj++) {
             for (let ii = 0; ii < factor; ii++) {
               // color density
-              color[0] += oldFluidBox.colorR[this.index(i * factor + ii, j * factor + jj)]
-              color[1] += oldFluidBox.colorG[this.index(i * factor + ii, j * factor + jj)]
-              color[2] += oldFluidBox.colorB[this.index(i * factor + ii, j * factor + jj)]
+              color[0] += oldFluidBox.color[0][this.index(i * factor + ii, j * factor + jj)]
+              color[1] += oldFluidBox.color[1][this.index(i * factor + ii, j * factor + jj)]
+              color[2] += oldFluidBox.color[2][this.index(i * factor + ii, j * factor + jj)]
 
               // velocity
-              Vx += oldFluidBox.Vx[oldFluidBox.index(i * factor + ii, j * factor + jj)]
-              Vy += oldFluidBox.Vy[oldFluidBox.index(i * factor + ii, j * factor + jj)]
+              Vx += oldFluidBox.velocity[0][oldFluidBox.index(i * factor + ii, j * factor + jj)]
+              Vy += oldFluidBox.velocity[1][oldFluidBox.index(i * factor + ii, j * factor + jj)]
             }
           }
 
           // set color
-          this.colorR[index] = color[0] / (factor * factor)
-          this.colorG[index] = color[1] / (factor * factor)
-          this.colorB[index] = color[2] / (factor * factor)
+          this.color[0][index] = color[0] / (factor * factor)
+          this.color[1][index] = color[1] / (factor * factor)
+          this.color[2][index] = color[2] / (factor * factor)
 
           // set velocity
-          this.Vx[index] = Vx / (factor * factor)
-          this.Vy[index] = Vy / (factor * factor)
+          this.velocity[0][index] = Vx / (factor * factor)
+          this.velocity[1][index] = Vy / (factor * factor)
         }
       }
     } else {
@@ -68,13 +71,13 @@ class FluidBox {
               let index = this.index(i * factor + ii, j * factor + jj)
 
               //color density
-              this.colorR[index] = oldFluidBox.colorR[oldFluidBox.index(i, j)]
-              this.colorG[index] = oldFluidBox.colorG[oldFluidBox.index(i, j)]
-              this.colorB[index] = oldFluidBox.colorB[oldFluidBox.index(i, j)]
+              this.color[0][index] = oldFluidBox.color[0][oldFluidBox.index(i, j)]
+              this.color[1][index] = oldFluidBox.color[1][oldFluidBox.index(i, j)]
+              this.color[2][index] = oldFluidBox.color[2][oldFluidBox.index(i, j)]
 
               //velocity
-              this.Vx[index] = oldFluidBox.Vx[oldFluidBox.index(i, j)]
-              this.Vy[index] = oldFluidBox.Vy[oldFluidBox.index(i, j)]
+              this.velocity[0][index] = oldFluidBox.velocity[0][oldFluidBox.index(i, j)]
+              this.velocity[1][index] = oldFluidBox.velocity[1][oldFluidBox.index(i, j)]
             }
           }
         }
@@ -93,14 +96,9 @@ class FluidBox {
 
   addColor (i, j, color) {
     let index = this.index(i, j)
-    this.colorR[index] = color[0]
-    this.colorG[index] = color[1]
-    this.colorB[index] = color[2]
-  }
-
-  getColor (i, j) {
-    let index = this.index(i, j)
-    return [this.colorR[index], this.colorG[index], this.colorB[index]]
+    this.color[0][index] += color[0]
+    this.color[1][index] += color[1]
+    this.color[2][index] += color[2]
   }
 
   addDensity (i, j, color) {
@@ -108,48 +106,45 @@ class FluidBox {
 
     color = color.map(x => Math.floor(x * settings.density / 255))
 
-    this.colorR[index] = color[0]
-    this.colorG[index] = color[1]
-    this.colorB[index] = color[2]
+    this.color[0][index] += color[0]
+    this.color[1][index] += color[1]
+    this.color[2][index] += color[2]
   }
 
   getDensity (i) {
-    return [this.colorR[i], this.colorG[i], this.colorB[i]]
+    return this.color.map(x => x[i])
   }
 
   addVelocity (i, j, amountX, amountY) {
     let index = this.index(i, j)
-    this.Vx[index] += amountX * settings.velocityMultiplier
-    this.Vy[index] += amountY * settings.velocityMultiplier
+    this.velocity[0][index] += amountX
+    this.velocity[1][index] += amountY
   }
 
   step () {
     // diffuse velocity
-    this.diffuse(1, this.Vx0, this.Vx, settings.viscosity)
-    this.diffuse(2, this.Vy0, this.Vy, settings.viscosity)
+    this.diffuse(1, this.velocity0[0], this.velocity[0], settings.viscosity)
+    this.diffuse(2, this.velocity0[1], this.velocity[1], settings.viscosity)
 
-    // project
-    this.project(this.Vx0, this.Vy0, this.Vx, this.Vy)
+    // project velocity to make it divergence free
+    this.project(this.velocity0[0], this.velocity0[1], this.velocity[0], this.velocity[1])
 
-    // swap
-    this.advect(1, this.Vx, this.Vx0, this.Vx0, this.Vy0)
-    this.advect(2, this.Vy, this.Vy0, this.Vx0, this.Vy0)
+    // advect velocity - move velocity to the next step
+    this.advect(1, this.velocity[0], this.velocity0[0], this.velocity0[0], this.velocity0[1])
+    this.advect(2, this.velocity[1], this.velocity0[1], this.velocity0[0], this.velocity0[1])
 
     // get rid of the divergence
-    this.project(this.Vx, this.Vy, this.Vx0, this.Vy0)
+    this.project(this.velocity[0], this.velocity[1], this.velocity0[0], this.velocity0[1])
 
-    // diffuse
-    // RED
-    this.diffuse(0, this.colorR0, this.colorR, settings.diffusion)
-    this.advect(0, this.colorR, this.colorR0, this.Vx, this.Vy)
+    // diffuse the color
+    this.diffuse(0, this.color0[0], this.color[0], settings.diffusion)
+    this.diffuse(0, this.color0[1], this.color[1], settings.diffusion)
+    this.diffuse(0, this.color0[2], this.color[2], settings.diffusion)
 
-    // GREEN
-    this.diffuse(0, this.colorG0, this.colorG, settings.diffusion)
-    this.advect(0, this.colorG, this.colorG0, this.Vx, this.Vy)
-
-    // BLUE
-    this.diffuse(0, this.colorB0, this.colorB, settings.diffusion)
-    this.advect(0, this.colorB, this.colorB0, this.Vx, this.Vy)
+    // advect the color - move color to the next step
+    this.advect(0, this.color[0], this.color0[0], this.velocity[0], this.velocity[1])
+    this.advect(0, this.color[1], this.color0[1], this.velocity[0], this.velocity[1])
+    this.advect(0, this.color[2], this.color0[2], this.velocity[0], this.velocity[1])
 
     // fade out
     this.fadeOut()
@@ -157,39 +152,69 @@ class FluidBox {
 
   fadeOut () {
     for (let i = 0; i < this.size * this.size; i++) {
+      let fade = 1 - settings.fadeout * settings.dt
       // fade out relative to dt
-      this.colorR[i] *= 1 - settings.dt * settings.fadeout
-      this.colorG[i] *= 1 - settings.dt * settings.fadeout
-      this.colorB[i] *= 1 - settings.dt * settings.fadeout
+      this.color[0][i] *= fade
+      this.color[1][i] *= fade
+      this.color[2][i] *= fade
     }
   }
 
+  // diffuse - make the x spread out inside the box
   diffuse (b, x, x0, diff) {
+    // diffuse the array x with the array x0
+    // b is the boundary condition
+    // diff is the diffusion rate
+
+    // calculate the diffusion rate
     let a = settings.dt * diff * (this.size - 2) * (this.size - 2)
+    // pass the diffusion rate to the linear solver
     this.linearSolve(b, x, x0, a, 1 + 4 * a)
   }
 
+  // linear solve - solves the equation Ax = b
   linearSolve (b, x, x0, a, c) {
-    // Gauss-Seidel
+    // we need to solve Ax = b
+    // where A is a tridiagonal matrix
+    // and x and b are vectors
+    // and x0 is the previous x
+    // and a and c are constants representing the matrix
+    // we use Gauss-Seidel method
+    // https://en.wikipedia.org/wiki/Gauss%E2%80%93Seidel_method
+    // https://en.wikipedia.org/wiki/Tridiagonal_matrix_algorithm
+    // https://en.wikipedia.org/wiki/Tridiagonal_matrix
+
+    // reciprocal of c
     let cRecip = 1.0 / c
+
+    // iterate
     for (let k = 0; k < iterations; k++) {
+      // over all cells
       for (let j = 1; j < this.size - 1; j++) {
         for (let i = 1; i < this.size - 1; i++) {
+          // calculate the value of the cell
           x[this.index(i, j)] =
-            (x0[this.index(i, j)]
+            (x0[this.index(i, j)] // previous value
               + a *
-              (x[this.index(i + 1, j)]
-                + x[this.index(i - 1, j)]
-                + x[this.index(i, j + 1)]
-                + x[this.index(i, j - 1)]
-              )) * cRecip
+              (x[this.index(i + 1, j)] // right
+                + x[this.index(i - 1, j)] // left
+                + x[this.index(i, j + 1)] // top
+                + x[this.index(i, j - 1)] // bottom
+              )) * cRecip // multiply by reciprocal of c
         }
       }
+
+      // subroutine boundary conditions
       this.setBoundary(b, x)
     }
   }
 
+  // set boundary - Check fluid doesn't escape the box by mirroring the values
   setBoundary (b, x) {
+    // boundary conditions
+    // b is the boundary condition
+    // x is the array to apply the boundary conditions to
+
     for (let i = 1; i < this.size - 1; i++) {
       x[this.index(i, 0)] = b === 2 ? -x[this.index(i, 1)] : x[this.index(i, 1)]
       x[this.index(i, this.size - 1)] = b === 2 ? -x[this.index(i, this.size - 2)] : x[this.index(i, this.size - 2)]

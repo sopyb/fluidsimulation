@@ -9,16 +9,16 @@ function hexToRgb (hex) {
 
 // settings stuff
 let settings = {
-  resolution: 64,
-  color: [255, 255, 255],
-  viscosity: 0.0001,
-  diffusion: 0.001,
-  fadeout: 0.01,
-  dt: 0.1,
-  density: 255,
-  velocityMultiplier: 1,
-  pixelated: false,
-  pause: false,
+  resolution: 64, // resolution of the fluid simulation
+  dt: 0.1, // time step
+  density: 255, // dye density
+  color: [255, 255, 255], // dye color
+  diffusion: 0.001, // dye diffusion rate
+  fadeout: 0.01, // dye fadeout
+  viscosity: 0.0001, // fluid viscosity
+  velocityMultiplier: 1, // velocity multiplier
+  pixelated: false, // pixelated rendering
+  pause: false, // pause simulation
 }
 
 let updateCallback = () => {}
