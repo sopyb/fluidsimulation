@@ -46,12 +46,6 @@ function fluidInteract ({ x, y, px, py }) {
   fluid.addVelocity(x, y + 1, x - px, y - py)
   fluid.addVelocity(x + 1, y + 1, x - px, y - py)
 
-  // add density
-  fluid.addDensity(x, y, settings.density)
-  fluid.addDensity(x + 1, y, settings.density)
-  fluid.addDensity(x, y + 1, settings.density)
-  fluid.addDensity(x + 1, y + 1, settings.density)
-
   // add color
   fluid.addColor(x, y, settings.color)
   fluid.addColor(x + 1, y, settings.color)
