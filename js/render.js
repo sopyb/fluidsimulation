@@ -82,8 +82,7 @@ canvas.addEventListener('mousemove', e => {
   }
 })
 
-// on mouseup
-canvas.addEventListener('mouseup', () => {
+let clearMouse = () => {
   mouse.down = false
 
   // clear mouse position
@@ -91,7 +90,13 @@ canvas.addEventListener('mouseup', () => {
   mouse.y = -1
   mouse.px = -1
   mouse.py = -1
-})
+}
+
+// on mouseup
+canvas.addEventListener('mouseup', clearMouse)
+
+// on mouseleave
+canvas.addEventListener('mouseleave', clearMouse)
 
 // ! Touch events
 
@@ -142,8 +147,7 @@ canvas.addEventListener('touchmove', e => {
   }
 })
 
-// on touchend
-canvas.addEventListener('touchend', e => {
+let removeTouchEvent = (e) => {
   let Ttouches = e.changedTouches
 
   // loop through touches
@@ -158,7 +162,13 @@ canvas.addEventListener('touchend', e => {
       }
     }
   }
-})
+}
+
+// on touchend
+canvas.addEventListener('touchend', removeTouchEvent)
+
+// on touchcancel
+canvas.addEventListener('touchcancel', removeTouchEvent)
 
 /**************************************************************************\
  *               Rendering the fluid simulation on the canvas             *
@@ -176,6 +186,17 @@ function render () {
     let x = i % settings.resolution,
       y = Math.floor(i / settings.resolution),
       d = fluid.getDensity(i)
+
+    // if any value of the d array is over 255 scale it down based on the highest value
+    if (d.any(v => v > 255)) {
+      // find the highest value
+      let max = Math.max(d[0], d[1], d[2])
+
+      // scale down the values
+      d[0] = d[0] / max * 255
+      d[1] = d[1] / max * 255
+      d[2] = d[2] / max * 255
+    }
 
     ctx.fillStyle = `rgba(${d[0]}, ${d[1]}, ${d[2]})`
     ctx.fillRect(x, y, 1, 1)
