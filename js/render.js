@@ -188,7 +188,7 @@ function render () {
       d = fluid.getDensity(i)
 
     // if any value of the d array is over 255 scale it down based on the highest value
-    if (d.any(v => v > 255)) {
+    if (d.some(v => v > 255)) {
       // find the highest value
       let max = Math.max(d[0], d[1], d[2])
 
